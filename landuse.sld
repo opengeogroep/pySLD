@@ -23,6 +23,138 @@
           </ogc:Filter>
 
         </Rule>
+        <Rule>
+          <Name>residential</Name>
+          <MaxScaleDenominator>120000</MaxScaleDenominator>
+          <ogc:Filter>
+            <ogc:PropertyIsEqualTo>
+              <ogc:PropertyName>landuse</ogc:PropertyName>
+              <ogc:Literal>residential</ogc:Literal>
+            </ogc:PropertyIsEqualTo>
+          </ogc:Filter>
+
+        </Rule>
+        <Rule>
+          <Name>grass</Name>
+          <MaxScaleDenominator>120000</MaxScaleDenominator>
+          <ogc:Filter>
+            <ogc:PropertyIsEqualTo>
+              <ogc:PropertyName>landuse</ogc:PropertyName>
+              <ogc:Literal>grass</ogc:Literal>
+            </ogc:PropertyIsEqualTo>
+          </ogc:Filter>
+
+        </Rule>
+        <Rule>
+          <Name>village_green</Name>
+          <MaxScaleDenominator>120000</MaxScaleDenominator>
+          <ogc:Filter>
+            <ogc:PropertyIsEqualTo>
+              <ogc:PropertyName>landuse</ogc:PropertyName>
+              <ogc:Literal>village_green</ogc:Literal>
+            </ogc:PropertyIsEqualTo>
+          </ogc:Filter>
+
+        </Rule>
+        <Rule>
+          <Name>reservoir</Name>
+          <MaxScaleDenominator>40000</MaxScaleDenominator>
+          <ogc:Filter>
+            <ogc:PropertyIsEqualTo>
+              <ogc:PropertyName>landuse</ogc:PropertyName>
+              <ogc:Literal>reservoir</ogc:Literal>
+            </ogc:PropertyIsEqualTo>
+          </ogc:Filter>
+
+        </Rule>
+        <Rule>
+          <Name>meadow</Name>
+          <MaxScaleDenominator>40000</MaxScaleDenominator>
+          <ogc:Filter>
+            <ogc:PropertyIsEqualTo>
+              <ogc:PropertyName>landuse</ogc:PropertyName>
+              <ogc:Literal>meadow</ogc:Literal>
+            </ogc:PropertyIsEqualTo>
+          </ogc:Filter>
+
+        </Rule>
+        <Rule>
+          <Name>industrial</Name>
+          <MaxScaleDenominator>120000</MaxScaleDenominator>
+          <ogc:Filter>
+            <ogc:PropertyIsEqualTo>
+              <ogc:PropertyName>landuse</ogc:PropertyName>
+              <ogc:Literal>industrial</ogc:Literal>
+            </ogc:PropertyIsEqualTo>
+          </ogc:Filter>
+
+        </Rule>
+        <Rule>
+          <Name>cemetery</Name>
+          <MaxScaleDenominator>40000</MaxScaleDenominator>
+          <ogc:Filter>
+            <ogc:PropertyIsEqualTo>
+              <ogc:PropertyName>landuse</ogc:PropertyName>
+              <ogc:Literal>cemetery</ogc:Literal>
+            </ogc:PropertyIsEqualTo>
+          </ogc:Filter>
+
+        </Rule>
+        <Rule>
+          <Name>commercial</Name>
+          <MaxScaleDenominator>120000</MaxScaleDenominator>
+          <ogc:Filter>
+            <ogc:PropertyIsEqualTo>
+              <ogc:PropertyName>landuse</ogc:PropertyName>
+              <ogc:Literal>commercial</ogc:Literal>
+            </ogc:PropertyIsEqualTo>
+          </ogc:Filter>
+
+        </Rule>
+        <Rule>
+          <Name>retail</Name>
+          <MaxScaleDenominator>120000</MaxScaleDenominator>
+          <ogc:Filter>
+            <ogc:PropertyIsEqualTo>
+              <ogc:PropertyName>landuse</ogc:PropertyName>
+              <ogc:Literal>retail</ogc:Literal>
+            </ogc:PropertyIsEqualTo>
+          </ogc:Filter>
+
+        </Rule>
+        <Rule>
+          <Name>farmyard</Name>
+          <MaxScaleDenominator>40000</MaxScaleDenominator>
+          <ogc:Filter>
+            <ogc:PropertyIsEqualTo>
+              <ogc:PropertyName>landuse</ogc:PropertyName>
+              <ogc:Literal>farmyard</ogc:Literal>
+            </ogc:PropertyIsEqualTo>
+          </ogc:Filter>
+
+        </Rule>
+        <Rule>
+          <Name>farmland</Name>
+          <MaxScaleDenominator>40000</MaxScaleDenominator>
+          <ogc:Filter>
+            <ogc:PropertyIsEqualTo>
+              <ogc:PropertyName>landuse</ogc:PropertyName>
+              <ogc:Literal>farmland</ogc:Literal>
+            </ogc:PropertyIsEqualTo>
+          </ogc:Filter>
+
+        </Rule>
+        <Rule>
+          <Name>farm</Name>
+          <MaxScaleDenominator>40000</MaxScaleDenominator>
+          <ogc:Filter>
+            <ogc:PropertyIsEqualTo>
+              <ogc:PropertyName>landuse</ogc:PropertyName>
+              <ogc:Literal>farmyard</ogc:Literal>
+            </ogc:PropertyIsEqualTo>
+          </ogc:Filter>
+
+        </Rule>
       </FeatureTypeStyle>
     </UserStyle>
   </NamedLayer>
