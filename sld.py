@@ -1,5 +1,5 @@
 
-#ruletypes = {0:'marker', 1:'line', '2':'polygon'}
+# constants
 signxml = {'=':'PropertyIsEqualTo'}
 
 
@@ -83,6 +83,7 @@ class Fts():
 
     def addRule(self, rule):
         self.rules.append(rule)
+
 
 
 
