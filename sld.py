@@ -17,16 +17,19 @@ class Sld():
         return 'sld(ftses:' + str(len(self.ftses)) + ')'
 
     def getSldString(self,indent=0,nls=True):
-        result = ''
-        result += '<?xml version="1.0" encoding="ISO-8859-1"?>\n'
-        result += '<StyledLayerDescriptor version="1.0.0"\n'
-        result += ' xsi:schemaLocation="http://www.opengis.net/sld StyledLayerDescriptor.xsd"\n'
-        result += ' xmlns="http://www.opengis.net/sld"\n'
-        result += ' xmlns:ogc="http://www.opengis.net/ogc"\n'
-        result += ' xmlns:xlink="http://www.w3.org/1999/xlink"\n'
-        result += ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">\n'
+	import xml.dom.minidom
+	doc = xml.dom.minidom.Document()
+	styledlayerdescriptor = doc.createElement("StyledLayerDescriptor")
+	styledlayerdescriptor.setAttribute("xsi:schemaLocation", "http://www.opengis.net/sld StyledLayerDescriptor.xsd")
+	styledlayerdescriptor.setAttribute("xmlns", "http://www.opengis.net/sld")
+	styledlayerdescriptor.setAttribute("xmlns:ogc", "http://www.opengis.net/sld")
+	styledlayerdescriptor.setAttribute("xmlns:xlink", "http://www.opengis.net/ogc")
+	styledlayerdescriptor.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance")
+	doc.appendChild(styledlayerdescriptor)
+	result = doc.toprettyxml()
         result += '  <!-- a Named Layer is the basic building block of an SLD document -->\n'
         result += '  <NamedLayer>\n'
+	doc.toxml(encoding="ISO-8859-1")
         if self.name:
             result += (indent * ' ')
             result += '    <Name>' + self.name+ '</Name>\n'
