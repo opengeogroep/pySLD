@@ -308,6 +308,41 @@ class Line():
 	_linesymbolizer.appendChild(_stroke)
         return _linesymbolizer
 
+# polygon
+class Polygon():
+    def __init__(self, fillcolor='#0000ff',strokecolor='#0000ff', strokewidth=1):
+        self.fillcolor = fillcolor
+	self.strokecolor = strokecolor
+        self.strokewidth = strokewidth
+    
+    def __str__(self):
+        result = 'polygon(fill:' + self.fillcolor + ', stroke:' + self.strokecolor + ', width:' + str(self.width) + ')'
+        return result
+
+    def getSldString(self,indent=0,nls=True):
+        return ''
+
+    def getSldDOM(self):
+	doc = xml.dom.minidom.Document()
+	_polysymbolizer = doc.createElement("PolygonSymbolizer")
+	_fill = doc.createElement("Fill")
+	_cssfill = doc.createElement("CssParameter")
+	_cssfill.setAttribute("name", "fill")
+	_cssfill.appendChild(doc.createTextNode(str(self.fillcolor)))
+	_fill.appendChild(_cssfill)
+	_polysymbolizer.appendChild(_fill)
+	_stroke = doc.createElement("Stroke")
+	_cssstroke = doc.createElement("CssParameter")
+	_cssstroke.setAttribute("name", "stroke")
+	_cssstroke.appendChild(doc.createTextNode(str(self.strokecolor)))
+	_cssstrokew = doc.createElement("CssParameter")
+	_cssstrokew.setAttribute("name", "stroke-width")
+	_cssstrokew.appendChild(doc.createTextNode(str(self.strokewidth)))
+	_stroke.appendChild(_cssstroke)
+	_stroke.appendChild(_cssstrokew)
+	_polysymbolizer.appendChild(_stroke)
+        return _polysymbolizer
+
 #font
 class Font():
     def __init__(self, family=None, size=None, style=None, weight=None):
