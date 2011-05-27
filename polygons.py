@@ -22,9 +22,16 @@ ruleset = [
 
 #aac566
 s = sld.Sld('landuse','OSM landuse','Landuse polygons for OpenStreetMap data',[sld.Fts(ruleset)])
+s.DOMToFile(key + '.sld')
 
-# export
-s.saveToFile('landuse.sld')
-s.DOMToFile('landuse_dom.sld')
-s.saveToClipboard()
-#s.DOMToClipboard()
+key = 'natural'
+
+# outline fts
+ruleset = [
+	sld.Rule('wood', 0,120000,sld.OgcFilter(key,sign,'wood'), sld.Polygon('#6C8C51','#6C8C51',1)),
+	sld.Rule('tree', 0,120000,sld.OgcFilter(key,sign,'tree'), sld.Polygon('#6C8C51','#6C8C51',1))
+     ]
+
+#aac566
+s = sld.Sld('natural','OSM natural','Natural polygons for OpenStreetMap data',[sld.Fts(ruleset)])
+s.DOMToFile(key + '.sld')
