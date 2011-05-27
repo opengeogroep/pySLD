@@ -6,11 +6,14 @@ signxml = {'=':'PropertyIsEqualTo'}
 # sld
 class Sld():
 
-    def __init__(self, name=None, title=None, abstract=None):
+    def __init__(self, name=None, title=None, abstract=None, featuretypestyles=None):
         self.name = name
         self.title = title
         self.abstract = abstract
-        self.ftses = []
+	if featuretypestyles is None:
+	    self.ftses = []
+	else:
+	    self.ftses = featuretypestyles
 
     def  __str__(self):
         return 'sld(ftses:' + str(len(self.ftses)) + ')'
@@ -114,8 +117,11 @@ class Sld():
 # fts (featuretypestyle)
 class Fts():
 
-    def __init__(self):
-        self.rules = []
+    def __init__(self,rules=None):
+	if rules is None:
+	    self.rules = []
+	else:
+	    self.rules = rules
 
     def  __str__(self):
         return 'fts(rules:' + str(len(self.rules)) + ')'

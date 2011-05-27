@@ -7,7 +7,7 @@
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <!-- a Named Layer is the basic building block of an SLD document -->
   <NamedLayer>
-    <Name>Landuse</Name>
+    <Name>landuse</Name>
     <UserStyle>
       <Title>OSM landuse</Title>
       <Abstract>Landuse polygons for OpenStreetMap data</Abstract>
