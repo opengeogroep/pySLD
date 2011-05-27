@@ -1,7 +1,5 @@
 import sld
 
-# nieuwe sld
-s = sld.Sld('landuse','OSM landuse','Landuse polygons for OpenStreetMap data')
 key = 'landuse'
 sign = '='
 
@@ -23,7 +21,7 @@ ruleset = [
      ]
 
 #aac566
-s.addFts(sld.Fts(ruleset))
+s = sld.Sld('landuse','OSM landuse','Landuse polygons for OpenStreetMap data',[sld.Fts(ruleset)])
 
 # export
 s.saveToFile('landuse.sld')
