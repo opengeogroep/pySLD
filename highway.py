@@ -3,8 +3,6 @@ import sld
 # nieuwe sld
 s = sld.Sld('Highway','OSM Roads','Roads based on field highway')
 
-
-
 # outline fts
 fts = sld.Fts()
 
@@ -22,8 +20,6 @@ fts.addRule(sld.Rule('snelweg', 20000,   500000,  f, sld.Line('#aa1111', 5)))
 fts.addRule(sld.Rule('snelweg', None,    20000,   f, sld.Line('#aa1111', 5)))
 
 s.addFts(fts)
-
-
 
 # inline fts
 fts = sld.Fts()
@@ -63,14 +59,10 @@ f = sld.OgcFilter('highway', '=', 'residential')
 fnt = sld.Font('Ubuntu', 11, 'italic', 'bold')
 fts.addRule(sld.Rule('labels',None, 20000, None, sld.LineText('name', '#222222', fnt, True)))
 
-
-
 s.addFts(fts)
 
-
-
-# exporteren
-
+# export
 s.saveToFile('test.sld')
+s.DOMToFile('test_dom.sld')
 s.saveToClipboard()
-
+#s.DOMToClipboard()
