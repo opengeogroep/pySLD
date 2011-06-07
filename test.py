@@ -1,36 +1,25 @@
 import sld
 
-print
+# Initiate Sld
+s = sld.Sld('Some Name','Some Title','Some Description')
 
-s = sld.sld('sldnaam','titel','omschrijving')
-print s
+# Initiate FeatureTypeStyle
+f = sld.Fts()
 
-f = sld.fts()
-print f
+# Initiate Rule
+r = sld.Rule('name',4000,20000)
+# Add single Filter
+r.fltr = sld.FltrComparison('highway','=','motorway')
+# Set Symbol to Default Line
+r.symbol = sld.Line()
 
-r = sld.rule('naam',4000,20000)
-r.ogcfilter = sld.ogcfilter('highway','=','motorway')
-r.symbol = sld.line()
-#print r.getSldString()
-
+# Add rule to the FeatureTypeStyle
 f.addRule(r)
 
-
-#print f.getSldString()
-
+# Add the FeatureTypeStyle to the Sld
 s.addFts(f)
-print s.getSldString(0,True)
 
-s.saveAsSld('test.sld')
-
-
-
-'''
-print f
-print f.getSldString()
-
-l = sld.line()
-print l
-print l.getSldString(8, False)
-'''
+# Save to file
+s.saveToFile('test.sld')
+s.DOMToFile('test_dom.sld')
 

@@ -1,1 +1,15 @@
 python library (sld.py) for generating SLD through 'human readable' objects and functions. With examples.
+
+Run any of the test_*.py files to generate test_<filename>.sld and test_<filename>_dom.sld
+
+The _dom files use the DOMToFile() procedures where the minidom is implemented. 
+For backward compatibility GetSLDString is maintained
+
+Changes applied on June 7, 2011:
+
+- test.py and test_filter.py validate
+- test_polygons.py validates after changing the ogcFilter to FltrComparison
+- test_highway.py validates and now writes to test_highway.sld and test_highway_dom.sld
+- Changed all classes to start with capitals
+- Filter in the getSLDString procedure chain now prints to compliant position in final SLD (compare test.sld and test_dom.sld)
+- Fill for Label in the getSLDString procedure chain now prints to compliant position in final SLD (compare highway.sld and highway_dom.sld)

@@ -1,18 +1,26 @@
 import xml.dom.minidom
 import re
-signxml = {'=':'PropertyIsEqualTo'}
+
+# constants
+signxml = {'=': 'PropertyIsEqualTo',
+           '!=':'PropertyIsNotEqualTo',
+           '<': 'PropertyIsLessThan',
+            '>': 'PropertyIsGreaterThan',
+           '<=': 'PropertyIsLessThanOrEquealTo',
+           '>=': 'PropertyIsGreaterThanOrEquealTo',
+           'like': 'PropertyIsLike',
+           'null': 'PropertyIsNull',
+           'nil': 'PropertyIsNil'}
+          
 
 # sld
 class Sld():
 
-    def __init__(self, name=None, title=None, abstract=None, featuretypestyles=None):
+    def __init__(self, name=None, title=None, abstract=None, featuretypestyles=[]):
         self.name = name
         self.title = title
         self.abstract = abstract
-	if featuretypestyles is None:
-	    self.ftses = []
-	else:
-	    self.ftses = featuretypestyles
+        self.ftses = featuretypestyles
 
     def  __str__(self):
         return 'sld(ftses:' + str(len(self.ftses)) + ')'
@@ -45,36 +53,36 @@ class Sld():
         return result
 
     def getSldDOM(self):
-	doc = xml.dom.minidom.Document()
-	styledlayerdescriptor = doc.createElement("StyledLayerDescriptor")
-	styledlayerdescriptor.setAttribute("xsi:schemaLocation", "http://www.opengis.net/sld StyledLayerDescriptor.xsd")
-	styledlayerdescriptor.setAttribute("xmlns", "http://www.opengis.net/sld")
-	styledlayerdescriptor.setAttribute("xmlns:ogc", "http://www.opengis.net/ogc")
-	styledlayerdescriptor.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink")
-	styledlayerdescriptor.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance")
-	styledlayerdescriptor.setAttribute("version", "1.0.0")
-	_comment = doc.createComment("a Named Layer is the basic building block of an SLD document")
-	styledlayerdescriptor.appendChild(_comment)
-	namedlayer = doc.createElement("NamedLayer")
-	userstyle = doc.createElement("UserStyle")
+        doc = xml.dom.minidom.Document()
+        styledlayerdescriptor = doc.createElement("StyledLayerDescriptor")
+        styledlayerdescriptor.setAttribute("xsi:schemaLocation", "http://www.opengis.net/sld StyledLayerDescriptor.xsd")
+        styledlayerdescriptor.setAttribute("xmlns", "http://www.opengis.net/sld")
+        styledlayerdescriptor.setAttribute("xmlns:ogc", "http://www.opengis.net/ogc")
+        styledlayerdescriptor.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink")
+        styledlayerdescriptor.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance")
+        styledlayerdescriptor.setAttribute("version", "1.0.0")
+        _comment = doc.createComment("a Named Layer is the basic building block of an SLD document")
+        styledlayerdescriptor.appendChild(_comment)
+        namedlayer = doc.createElement("NamedLayer")
+        userstyle = doc.createElement("UserStyle")
         if self.name:
             _name = doc.createElement("Name")
             _name.appendChild(doc.createTextNode(self.name))
             namedlayer.appendChild(_name)
         if self.title:
-		_title = doc.createElement("Title")
-		_title.appendChild(doc.createTextNode(self.title))
-		userstyle.appendChild(_title)
+            _title = doc.createElement("Title")
+            _title.appendChild(doc.createTextNode(self.title))
+            userstyle.appendChild(_title)
         if self.abstract:
-		abstract = doc.createElement("Abstract")
-		abstract.appendChild(doc.createTextNode(self.abstract))
-		userstyle.appendChild(abstract)
+            abstract = doc.createElement("Abstract")
+            abstract.appendChild(doc.createTextNode(self.abstract))
+            userstyle.appendChild(abstract)
         if len(self.ftses) > 0:
-            	for f in self.ftses:
-			userstyle.appendChild(f.getSldDOM())
-	namedlayer.appendChild(userstyle)
-	styledlayerdescriptor.appendChild(namedlayer)
-	doc.appendChild(styledlayerdescriptor)
+            for f in self.ftses:
+                userstyle.appendChild(f.getSldDOM())
+        namedlayer.appendChild(userstyle)
+        styledlayerdescriptor.appendChild(namedlayer)
+        doc.appendChild(styledlayerdescriptor)
         return doc
 
     def addFts(self, fts):
@@ -87,11 +95,11 @@ class Sld():
 
     def DOMToFile(self,fn):
         outfile = open(fn,'w')
-	finaldom = self.getSldDOM()
-	uglyXml = finaldom.toprettyxml(indent='  ', encoding="ISO-8859-1")
-	text_re = re.compile('>\n\s+([^<>\s].*?)\n\s+</', re.DOTALL)    
-	prettyXml = text_re.sub('>\g<1></', uglyXml)
-	#print prettyXml
+        finaldom = self.getSldDOM()
+        uglyXml = finaldom.toprettyxml(indent='  ', encoding="ISO-8859-1")
+        text_re = re.compile('>\n\s+([^<>\s].*?)\n\s+</', re.DOTALL)    
+        prettyXml = text_re.sub('>\g<1></', uglyXml)
+        #print prettyXml
         outfile.write(prettyXml)
         outfile.close()
 
@@ -103,24 +111,21 @@ class Sld():
         clipboard.store()
 
     def DOMtoClipboard(self):
-	import pygtk
+        import pygtk
         import gtk
         clipboard = gtk.clipboard_get()
-	finaldom = self.getSldDOM()
-	uglyXml = finaldom.toprettyxml(indent='  ', encoding="ISO-8859-1")
-	text_re = re.compile('>\n\s+([^<>\s].*?)\n\s+</', re.DOTALL)    
-	prettyXml = text_re.sub('>\g<1></', uglyXml)
-	clipboard.set_text(prettyXml)
-	clipboard.store()
+        finaldom = self.getSldDOM()
+        uglyXml = finaldom.toprettyxml(indent='  ', encoding="ISO-8859-1")
+        text_re = re.compile('>\n\s+([^<>\s].*?)\n\s+</', re.DOTALL)    
+        prettyXml = text_re.sub('>\g<1></', uglyXml)
+        clipboard.set_text(prettyXml)
+        clipboard.store()
 
 # fts (featuretypestyle)
 class Fts():
 
-    def __init__(self,rules=None):
-	if rules is None:
-	    self.rules = []
-	else:
-	    self.rules = rules
+    def __init__(self,rules=[]):
+        self.rules = rules
 
     def  __str__(self):
         return 'fts(rules:' + str(len(self.rules)) + ')'
@@ -138,8 +143,8 @@ class Fts():
         return result
 
     def getSldDOM(self):
-	doc = xml.dom.minidom.Document()
-	featuretypestyle = doc.createElement("FeatureTypeStyle")
+        doc = xml.dom.minidom.Document()
+        featuretypestyle = doc.createElement("FeatureTypeStyle")
         if len(self.rules) > 0:
             for r in self.rules:
                 featuretypestyle.appendChild(r.getSldDOM())
@@ -148,18 +153,13 @@ class Fts():
     def addRule(self, rule):
         self.rules.append(rule)
 
-
-
-
-
 # Rule
 class Rule():
-
-    def __init__(self, name=None, scalemin=None, scalemax=None, ogcfilter=None, symbol=None):
+    def __init__(self, name=None, scalemin=None, scalemax=None, fltr=None, symbol=None):
         self.name = name
         self.scalemin = scalemin
         self.scalemax = scalemax
-        self.ogcfilter = ogcfilter
+        self.fltr = fltr
         self.symbol = symbol
 
     def  __str__(self):
@@ -171,6 +171,14 @@ class Rule():
             if nls:
                 result += '\n' + (indent * ' ')
             result += '  <Name>' + self.name+ '</Name>'
+            if self.fltr:
+                if nls:
+                    result += '\n' + '  '
+            result += '<ogc:Filter>'
+            result += self.fltr.getSldString(indent+2,nls)
+            if nls:
+                result += '\n' + '  '
+            result += '</ogc:Filter>'
         if self.scalemin:
             if nls:
                 result += '\n' + (indent * ' ')
@@ -179,10 +187,6 @@ class Rule():
             if nls:
                 result += '\n' + (indent * ' ')
             result += '  <MaxScaleDenominator>' + str(self.scalemax) + '</MaxScaleDenominator>'
-        if self.ogcfilter:
-            if nls:
-                result += '\n'
-            result += self.ogcfilter.getSldString(indent+2,nls)
         if self.symbol:
             if nls:
                 result += '\n'
@@ -193,14 +197,16 @@ class Rule():
         return result
 
     def getSldDOM(self):
-	doc = xml.dom.minidom.Document()
-	rule = doc.createElement("Rule")
+        doc = xml.dom.minidom.Document()
+        rule = doc.createElement("Rule")
         if self.name:
             _name = doc.createElement("Name")
             _name.appendChild(doc.createTextNode(self.name))
             rule.appendChild(_name)
-        if self.ogcfilter:
-            rule.appendChild(self.ogcfilter.getSldDOM())
+        if self.fltr:
+            _filter = doc.createElementNS("http://www.opengis.net/ogc","ogc:Filter")
+            _filter.appendChild(self.fltr.getSldDOM())
+            rule.appendChild(_filter)
         if self.scalemin:
             _mindenom = doc.createElement("MinScaleDenominator")
             _mindenom.appendChild(doc.createTextNode(str(self.scalemin)))
@@ -213,48 +219,120 @@ class Rule():
             rule.appendChild(self.symbol.getSldDOM())
         return rule
 
-# OgcFilter
-class OgcFilter():
-    def __init__(self,field,sign,value):
+# FltrBitwise
+class FltrBitwise():
+    def __init__(self, bitwisetype='', subfilters=[]):
+        self.bitwisetype = bitwisetype.capitalize() # convert to uppercase!
+        self.subfilters = subfilters
+    
+    def __str__(self):
+        result = 'FltrBitwise(' + self.bitwisetype + ')'
+        return result
+
+    def getSldString(self, indent=0, nls=True):
+        result = ''
+        if nls:
+            result += (indent * ' ')  
+        result += '<ogc:' + self.bitwisetype + '>'
+        for f in self.subfilters:
+            if nls:
+                result += '\n'
+            result += f.getSldString(indent+2, nls)
+        if nls:
+            result += '\n' + (indent * ' ')
+        result += '</ogc:' + self.bitwisetype + '>'
+        return result
+
+    def getSldDOM(self):
+        doc = xml.dom.minidom.Document()
+        _filtertype = doc.createElementNS("http://www.opengis.net/ogc","ogc:"+ self.bitwisetype)
+        for f in self.subfilters:
+            _filtertype.appendChild(f.getSldDOM())
+        return _filtertype
+
+# FltrComparison
+class FltrComparison():
+    def __init__(self, field=None, sign=None, value=None):
         self.field = field
         self.sign = sign
         self.value = value
     
     def __str__(self):
-        result = 'filter(' + self.field + ' ' + self.sign + ' ' + str(self.value) + ')'
+        result = 'FltrComparison(' + self.field + ' ' + self.sign + ' ' + str(self.value) + ')'
         return result
 
-    def getSldString(self,indent=0,nls=True):
-        result = (indent * ' ') + '<ogc:Filter>'
+    def getSldString(self, indent=0, nls=True):
+        result = ''
+        if nls:
+            result += (indent * ' ')  
+        result += '<ogc:' + signxml[self.sign]+ '>'
+        if nls:
+            result += '\n' + (indent * ' ') + '  '
+        result += '<ogc:PropertyName>' + str(self.field) + '</ogc:PropertyName>'
+        if not (self.sign == 'null' or self.sign == 'nil'):
+            if nls:
+                result += '\n' + (indent * ' ') + '  '
+            result += '<ogc:Literal>' + str(self.value) + '</ogc:Literal>'
         if nls:
             result += '\n' + (indent * ' ')
-        result += '  <ogc:' + signxml[self.sign]+ '>'
-        if nls:
-            result += '\n' + (indent * ' ')
-        result += '    <ogc:PropertyName>' + str(self.field) + '</ogc:PropertyName>'
-        if nls:
-            result += '\n' + (indent * ' ')
-        result += '    <ogc:Literal>' + str(self.value) + '</ogc:Literal>'
-        if nls:
-            result += '\n' + (indent * ' ')
-        result += '  </ogc:' + signxml[self.sign]+ '>'
-        if nls:
-            result += '\n' + (indent * ' ')
-        result += '</ogc:Filter>'
+        result += '</ogc:' + signxml[self.sign]+ '>'
         return result
 
     def getSldDOM(self):
-	doc = xml.dom.minidom.Document()
-	_filter = doc.createElementNS("http://www.opengis.net/ogc","ogc:Filter")
-	_filtertype = doc.createElementNS("http://www.opengis.net/ogc","ogc:" + signxml[self.sign])
-	_propertyname = doc.createElementNS("http://www.opengis.net/ogc","ogc:PropertyName")
-	_propertyname.appendChild(doc.createTextNode(str(self.field)))
-	_filtertype.appendChild(_propertyname)
-	_literal = doc.createElementNS("http://www.opengis.net/ogc","ogc:Literal")
-	_literal.appendChild(doc.createTextNode(str(self.value)))
-	_filtertype.appendChild(_literal)
-	_filter.appendChild(_filtertype)
+        doc = xml.dom.minidom.Document()
+        _filter = doc.createElementNS("http://www.opengis.net/ogc","ogc:"+ signxml[self.sign])
+        _propertyname = doc.createElementNS("http://www.opengis.net/ogc","ogc:PropertyName")
+        _propertyname.appendChild(doc.createTextNode(str(self.field)))
+        _filter.appendChild(_propertyname)
+        if not (self.sign == 'null' or self.sign == 'nil'):
+            _literal = doc.createElementNS("http://www.opengis.net/ogc","ogc:Literal")
+            _literal.appendChild(doc.createTextNode(str(self.value)))
+            _filter.appendChild(_literal)
         return _filter
+
+# FltrBetween
+class FltrBetween():
+    def __init__(self, field=None, minvalue=None, maxvalue=None):
+        self.field = field
+        self.minvalue = minvalue
+        self.maxvalue = maxvalue
+    
+    def __str__(self):
+        result = 'FltrBetween(' + str(self.minvalue) + ' < ' + self.field + ' < ' + str(self.maxvalue) + ')'
+        return result
+
+    def getSldString(self, indent=0, nls=True):
+        result = ''
+        if nls:
+            result += (indent * ' ')  
+        result += '<ogc:PropertyIsBetween>'
+        if nls:
+            result += '\n' + (indent * ' ') + '  '
+        result += '<ogc:PropertyName>' + str(self.field) + '</ogc:PropertyName>'
+        if nls:
+            result += '\n' + (indent * ' ') + '  '
+        result += '<ogc:LowerBoundary>' + str(self.minvalue) + '</ogc:LowerBoundary>'
+        if nls:
+            result += '\n' + (indent * ' ') + '  '
+        result += '<ogc:UpperBoundary>' + str(self.maxvalue) + '</ogc:UpperBoundary>'
+        if nls:
+            result += '\n' + (indent * ' ')
+        result += '</ogc:PropertyIsBetween>'
+        return result
+
+    def getSldDOM(self):
+        doc = xml.dom.minidom.Document()
+        _between = doc.createElementNS("http://www.opengis.net/ogc","ogc:PropertyIsBetween")
+        _propertyname = doc.createElementNS("http://www.opengis.net/ogc","ogc:PropertyName")
+        _propertyname.appendChild(doc.createTextNode(str(self.field)))
+        _between.appendChild(_propertyname)
+        _lower = doc.createElementNS("http://www.opengis.net/ogc","ogc:LowerBoundary")
+        _lower.appendChild(doc.createTextNode(str(self.minvalue)))
+        _between.appendChild(_lower)
+        _upper = doc.createElementNS("http://www.opengis.net/ogc","ogc:UpperBoundary")
+        _upper.appendChild(doc.createTextNode(str(self.maxvalue)))
+        _between.appendChild(_upper)
+        return _between
 
 # line
 class Line():
@@ -292,33 +370,33 @@ class Line():
         return result
 
     def getSldDOM(self):
-	doc = xml.dom.minidom.Document()
-	_linesymbolizer = doc.createElement("LineSymbolizer")
-	_stroke = doc.createElement("Stroke")
-	_cssstroke = doc.createElement("CssParameter")
-	_cssstroke.setAttribute("name", "stroke")
-	_cssstroke.appendChild(doc.createTextNode(str(self.color)))
-	_cssstrokew = doc.createElement("CssParameter")
-	_cssstrokew.setAttribute("name", "stroke-width")
-	_cssstrokew.appendChild(doc.createTextNode(str(self.width)))
-	_cssstrokelj = doc.createElement("CssParameter")
-	_cssstrokelj.setAttribute("name", "stroke-linejoin")
-	_cssstrokelj.appendChild(doc.createTextNode("round"))
-	_cssstrokelc = doc.createElement("CssParameter")
-	_cssstrokelc.setAttribute("name", "stroke-linecap")
-	_cssstrokelc.appendChild(doc.createTextNode("round"))
-	_stroke.appendChild(_cssstroke)
-	_stroke.appendChild(_cssstrokew)
-	_stroke.appendChild(_cssstrokelj)
-	_stroke.appendChild(_cssstrokelc)
-	_linesymbolizer.appendChild(_stroke)
+        doc = xml.dom.minidom.Document()
+        _linesymbolizer = doc.createElement("LineSymbolizer")
+        _stroke = doc.createElement("Stroke")
+        _cssstroke = doc.createElement("CssParameter")
+        _cssstroke.setAttribute("name", "stroke")
+        _cssstroke.appendChild(doc.createTextNode(str(self.color)))
+        _cssstrokew = doc.createElement("CssParameter")
+        _cssstrokew.setAttribute("name", "stroke-width")
+        _cssstrokew.appendChild(doc.createTextNode(str(self.width)))
+        _cssstrokelj = doc.createElement("CssParameter")
+        _cssstrokelj.setAttribute("name", "stroke-linejoin")
+        _cssstrokelj.appendChild(doc.createTextNode("round"))
+        _cssstrokelc = doc.createElement("CssParameter")
+        _cssstrokelc.setAttribute("name", "stroke-linecap")
+        _cssstrokelc.appendChild(doc.createTextNode("round"))
+        _stroke.appendChild(_cssstroke)
+        _stroke.appendChild(_cssstrokew)
+        _stroke.appendChild(_cssstrokelj)
+        _stroke.appendChild(_cssstrokelc)
+        _linesymbolizer.appendChild(_stroke)
         return _linesymbolizer
 
 # polygon
 class Polygon():
     def __init__(self, fillcolor='#0000ff',strokecolor='#0000ff', strokewidth=1):
         self.fillcolor = fillcolor
-	self.strokecolor = strokecolor
+        self.strokecolor = strokecolor
         self.strokewidth = strokewidth
     
     def __str__(self):
@@ -326,27 +404,31 @@ class Polygon():
         return result
 
     def getSldString(self,indent=0,nls=True):
-        return ''
+        finaldom = self.getSldDOM()
+        uglyXml = finaldom.toprettyxml(indent='  ', encoding="ISO-8859-1")
+        text_re = re.compile('>\n\s+([^<>\s].*?)\n\s+</', re.DOTALL)    
+        prettyXml = text_re.sub('>\g<1></', uglyXml)
+        return prettyXml
 
     def getSldDOM(self):
-	doc = xml.dom.minidom.Document()
-	_polysymbolizer = doc.createElement("PolygonSymbolizer")
-	_fill = doc.createElement("Fill")
-	_cssfill = doc.createElement("CssParameter")
-	_cssfill.setAttribute("name", "fill")
-	_cssfill.appendChild(doc.createTextNode(str(self.fillcolor)))
-	_fill.appendChild(_cssfill)
-	_polysymbolizer.appendChild(_fill)
-	_stroke = doc.createElement("Stroke")
-	_cssstroke = doc.createElement("CssParameter")
-	_cssstroke.setAttribute("name", "stroke")
-	_cssstroke.appendChild(doc.createTextNode(str(self.strokecolor)))
-	_cssstrokew = doc.createElement("CssParameter")
-	_cssstrokew.setAttribute("name", "stroke-width")
-	_cssstrokew.appendChild(doc.createTextNode(str(self.strokewidth)))
-	_stroke.appendChild(_cssstroke)
-	_stroke.appendChild(_cssstrokew)
-	_polysymbolizer.appendChild(_stroke)
+        doc = xml.dom.minidom.Document()
+        _polysymbolizer = doc.createElement("PolygonSymbolizer")
+        _fill = doc.createElement("Fill")
+        _cssfill = doc.createElement("CssParameter")
+        _cssfill.setAttribute("name", "fill")
+        _cssfill.appendChild(doc.createTextNode(str(self.fillcolor)))
+        _fill.appendChild(_cssfill)
+        _polysymbolizer.appendChild(_fill)
+        _stroke = doc.createElement("Stroke")
+        _cssstroke = doc.createElement("CssParameter")
+        _cssstroke.setAttribute("name", "stroke")
+        _cssstroke.appendChild(doc.createTextNode(str(self.strokecolor)))
+        _cssstrokew = doc.createElement("CssParameter")
+        _cssstrokew.setAttribute("name", "stroke-width")
+        _cssstrokew.appendChild(doc.createTextNode(str(self.strokewidth)))
+        _stroke.appendChild(_cssstroke)
+        _stroke.appendChild(_cssstrokew)
+        _polysymbolizer.appendChild(_stroke)
         return _polysymbolizer
 
 #font
@@ -356,7 +438,7 @@ class Font():
         self.size = size
         self.style = style
         self.weight = weight
- 
+
     def getSldString(self,indent=0,nls=True):
         result = '<Font>'
         if self.family:
@@ -381,27 +463,27 @@ class Font():
         return result
    
     def getSldDOM(self):
-	doc = xml.dom.minidom.Document()
-	_font = doc.createElement("Font")
+        doc = xml.dom.minidom.Document()
+        _font = doc.createElement("Font")
         if self.family:
-	    _cssff = doc.createElement("CssParameter")
-	    _cssff.setAttribute("name", "font-family")
-	    _cssff.appendChild(doc.createTextNode(str(self.family)))
+            _cssff = doc.createElement("CssParameter")
+            _cssff.setAttribute("name", "font-family")
+            _cssff.appendChild(doc.createTextNode(str(self.family)))
             _font.appendChild(_cssff)
         if self.size:
-	    _cssfs = doc.createElement("CssParameter")
-	    _cssfs.setAttribute("name", "font-size")
-	    _cssfs.appendChild(doc.createTextNode(str(self.size)))
+            _cssfs = doc.createElement("CssParameter")
+            _cssfs.setAttribute("name", "font-size")
+            _cssfs.appendChild(doc.createTextNode(str(self.size)))
             _font.appendChild(_cssfs)
         if self.style:
-	    _cssfy = doc.createElement("CssParameter")
-	    _cssfy.setAttribute("name", "font-style")
-	    _cssfy.appendChild(doc.createTextNode(str(self.style)))
+            _cssfy = doc.createElement("CssParameter")
+            _cssfy.setAttribute("name", "font-style")
+            _cssfy.appendChild(doc.createTextNode(str(self.style)))
             _font.appendChild(_cssfy)
         if self.weight:
-	    _cssfw = doc.createElement("CssParameter")
-	    _cssfw.setAttribute("name", "font-weight")
-	    _cssfw.appendChild(doc.createTextNode(str(self.weight)))
+            _cssfw = doc.createElement("CssParameter")
+            _cssfw.setAttribute("name", "font-weight")
+            _cssfw.appendChild(doc.createTextNode(str(self.weight)))
             _font.appendChild(_cssfw)
         return _font
 
@@ -423,14 +505,18 @@ class LineText():
             if nls:
                 result += '\n' + (indent * ' ') + '  '
             result += '<Label><ogc:PropertyName>' + str(self.field) + '</ogc:PropertyName></Label>'
-        if self.color:
-            if nls:
-                result += '\n' + (indent * ' ') + '  '
-            result += '<Fill><CssParameter name="fill">' + str(self.color) + '</CssParameter></Fill>'
         if self.font:
             if nls:
                 result += '\n' + (indent * ' ') + '  '
             result += self.font.getSldString(indent+2,nls)
+        if nls:
+            result += '\n' + (indent * ' ') + '  '
+        #Enhance labelplacement
+        result += '<LabelPlacement><LinePlacement /></LabelPlacement>'
+        if self.color:
+            if nls:
+                result += '\n' + (indent * ' ') + '  '
+            result += '<Fill><CssParameter name="fill">' + str(self.color) + '</CssParameter></Fill>'
         if self.followLine:
             if nls:
                 result += '\n' + (indent * ' ') + '  '
@@ -444,52 +530,48 @@ class LineText():
             if nls:
                 result += '\n' + (indent * ' ') + '  '
             result += '<VendorOption name="repeat">150</VendorOption>'
-            if nls:
-                result += '\n' + (indent * ' ') + '  '
-            result += '<LabelPlacement><LinePlacement /></LabelPlacement>'
         if nls:
             result += '\n' + (indent * ' ') 
         result += '</TextSymbolizer>'
         return result
 
     def getSldDOM(self):
-	doc = xml.dom.minidom.Document()
-	_textsymbolizer = doc.createElement("TextSymbolizer")
+        doc = xml.dom.minidom.Document()
+        _textsymbolizer = doc.createElement("TextSymbolizer")
         if self.field:
-	    _label = doc.createElement("Label")
-	    _propertyname = doc.createElementNS("http://www.opengis.net/ogc","ogc:PropertyName")
-	    _propertyname.appendChild(doc.createTextNode(str(self.field)))
-	    _label.appendChild(_propertyname)
-	    _textsymbolizer.appendChild(_label)
+            _label = doc.createElement("Label")
+            _propertyname = doc.createElementNS("http://www.opengis.net/ogc","ogc:PropertyName")
+            _propertyname.appendChild(doc.createTextNode(str(self.field)))
+            _label.appendChild(_propertyname)
+            _textsymbolizer.appendChild(_label)
         if self.font:
             _textsymbolizer.appendChild(self.font.getSldDOM())
         _labelplacement = doc.createElement("LabelPlacement")
         _labelplacement.appendChild(doc.createElement("LinePlacement"))
         _textsymbolizer.appendChild(_labelplacement)
         if self.color:
-	    _fill = doc.createElement("Fill")
-	    _cssfill = doc.createElement("CssParameter")
-	    _cssfill.setAttribute("name", "fill")
-	    _cssfill.appendChild(doc.createTextNode(str(self.color)))
-	    _fill.appendChild(_cssfill)
-	    _textsymbolizer.appendChild(_fill)
+            _fill = doc.createElement("Fill")
+            _cssfill = doc.createElement("CssParameter")
+            _cssfill.setAttribute("name", "fill")
+            _cssfill.appendChild(doc.createTextNode(str(self.color)))
+            _fill.appendChild(_cssfill)
+            _textsymbolizer.appendChild(_fill)
         if self.followLine:
-	    _vo1 = doc.createElement("VendorOption")
-	    _vo1.setAttribute("name", "followLine")
-	    _vo1.appendChild(doc.createTextNode("true"))
-	    _textsymbolizer.appendChild(_vo1)
-	    _vo2 = doc.createElement("VendorOption")
-	    _vo2.setAttribute("name", "maxAngleDelta")
-	    _vo2.appendChild(doc.createTextNode("90"))
-	    _textsymbolizer.appendChild(_vo2)
-	    _vo3 = doc.createElement("VendorOption")
-	    _vo3.setAttribute("name", "maxDisplacement")
-	    _vo3.appendChild(doc.createTextNode("400"))
-	    _textsymbolizer.appendChild(_vo3)
-	    _vo4 = doc.createElement("VendorOption")
-	    _vo4.setAttribute("name", "repeat")
-	    _vo4.appendChild(doc.createTextNode("150"))
-	    _textsymbolizer.appendChild(_vo4)
+            _vo1 = doc.createElement("VendorOption")
+            _vo1.setAttribute("name", "followLine")
+            _vo1.appendChild(doc.createTextNode("true"))
+            _textsymbolizer.appendChild(_vo1)
+            _vo2 = doc.createElement("VendorOption")
+            _vo2.setAttribute("name", "maxAngleDelta")
+            _vo2.appendChild(doc.createTextNode("90"))
+            _textsymbolizer.appendChild(_vo2)
+            _vo3 = doc.createElement("VendorOption")
+            _vo3.setAttribute("name", "maxDisplacement")
+            _vo3.appendChild(doc.createTextNode("400"))
+            _textsymbolizer.appendChild(_vo3)
+            _vo4 = doc.createElement("VendorOption")
+            _vo4.setAttribute("name", "repeat")
+            _vo4.appendChild(doc.createTextNode("150"))
+            _textsymbolizer.appendChild(_vo4)
         return _textsymbolizer
-
-
+#end of sld.py
