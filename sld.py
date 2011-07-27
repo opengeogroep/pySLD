@@ -156,11 +156,14 @@ class Fts():
 # Rule
 class Rule():
     def __init__(self, name=None, scalemin=None, scalemax=None, fltr=None, symbol=None):
+        #todo: Add title and abstract
         self.name = name
         self.scalemin = scalemin
         self.scalemax = scalemax
         self.fltr = fltr
+        #todo: Allow for at least one and possibly more symbols
         self.symbol = symbol
+
 
     def  __str__(self):
         return 'rule()'
@@ -216,7 +219,11 @@ class Rule():
             _maxdenom.appendChild(doc.createTextNode(str(self.scalemax)))
             rule.appendChild(_maxdenom)
         if self.symbol:
-            rule.appendChild(self.symbol.getSldDOM())
+            if type(self.symbol) is list:
+                for s in self.symbol:
+                    rule.appendChild(s.getSldDOM())
+            else:
+                rule.appendChild(self.symbol.getSldDOM())
         return rule
 
 # FltrBitwise
@@ -433,9 +440,11 @@ class Polygon():
 
 #font
 class Font():
-    def __init__(self, family=None, size=None, style=None, weight=None):
+    def __init__(self, family=None, size=None, color=None, style=None, weight=None):
         self.family = family
         self.size = size
+        #todo: add color
+        self.color = color
         self.style = style
         self.weight = weight
 
@@ -475,6 +484,11 @@ class Font():
             _cssfs.setAttribute("name", "font-size")
             _cssfs.appendChild(doc.createTextNode(str(self.size)))
             _font.appendChild(_cssfs)
+        if self.color:
+            _cssfc = doc.createElement("CssParameter")
+            _cssfc.setAttribute("name", "font-color")
+            _cssfc.appendChild(doc.createTextNode(str(self.color)))
+            _font.appendChild(_cssfc)
         if self.style:
             _cssfy = doc.createElement("CssParameter")
             _cssfy.setAttribute("name", "font-style")
@@ -488,15 +502,15 @@ class Font():
         return _font
 
 #line text symbol
-class LineText():
-    def __init__(self, field=None, color='#000000', font=None, followLine=False):
+class Text():
+    def __init__(self, field=None, font=None, followLine=False,color=None):
         self.field = field
         self.color = color
         self.font = font
         self.followLine = followLine
     
     def __str__(self):
-        result = 'LineText(field:' + self.field + ', color:' + self.color + ')'
+        result = 'Text(field:' + self.field + ', color:' + self.color + ')'
         return result
 
     def getSldString(self,indent=0,nls=True):
