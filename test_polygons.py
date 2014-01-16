@@ -35,5 +35,5 @@ ruleset = [
 
 #Save to file
 s = sld.Sld('natural','OSM natural','Natural polygons for OpenStreetMap data',[sld.Fts(ruleset)])
-s.saveToFile('test_' + key + '_dom.sld')
+#s.saveToFile('test_' + key + '_dom.sld')
 s.DOMToFile('test_' + key + '_dom.sld')
