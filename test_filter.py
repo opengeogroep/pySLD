@@ -29,5 +29,5 @@ f.addRule(r)
 s.addFts(f)
 
 # Save to file
-s.saveToFile('test_filter.sld')
+#s.saveToFile('test_filter.sld')
 s.DOMToFile('test_filter_dom.sld')
