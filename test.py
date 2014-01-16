@@ -20,6 +20,6 @@ f.addRule(r)
 s.addFts(f)
 
 # Save to file
-s.saveToFile('test.sld')
+#s.saveToFile('test.sld')
 s.DOMToFile('test_dom.sld')
 
